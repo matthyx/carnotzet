@@ -178,20 +178,11 @@ public class DockerComposeRuntime implements ContainerOrchestrationRuntime {
 			return;
 		}
 
-		log.debug("Execution from inside a container detected! Attempting to configure container networking to allow communication.");
-
-		String networkMode =
-				runCommandAndCaptureOutput("/bin/sh", "-c", "docker inspect -f '{{.HostConfig.NetworkMode}}' " + buildContainerId);
-
-		String containerToConnect = buildContainerId;
-
-		// shared network stack
-		if (networkMode.startsWith("container:")) {
-			containerToConnect = networkMode.replace("container:", "");
-			log.debug("Detected a shared container network stack.");
+		if (carnotzet.getConfig().getAttachToCarnotzetNetwork() == null || carnotzet.getConfig().getAttachToCarnotzetNetwork()) {
+			log.debug("Execution from inside a container detected! Attempting to configure container networking to allow communication.");
+			log.debug("attaching container [" + buildContainerId + "] to network [" + getDockerNetworkName() + "]");
+			runCommand("/bin/bash", "-c", "docker network connect " + getDockerNetworkName() + " " + buildContainerId);
 		}
-		log.debug("attaching container [" + containerToConnect + "] to network [" + getDockerNetworkName() + "]");
-		runCommand("/bin/sh", "-c", "docker network connect " + getDockerNetworkName() + " " + containerToConnect);
 	}
 
 	private String getDockerComposeProjectName() {

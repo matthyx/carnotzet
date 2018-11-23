@@ -61,6 +61,10 @@ public abstract class AbstractZetMojo extends AbstractMojo {
 	@Getter
 	private boolean follow;
 
+	@Parameter(property = "attachToCarnotzetNetwork")
+	@Getter
+	private Boolean attachToCarnotzetNetwork;
+
 	@Getter
 	@Setter
 	private Carnotzet carnotzet;
@@ -89,6 +93,7 @@ public abstract class AbstractZetMojo extends AbstractMojo {
 				.topLevelModuleId(new CarnotzetModuleCoordinates(project.getGroupId(), project.getArtifactId(), project.getVersion()))
 				.resourcesPath(Paths.get(project.getBuild().getDirectory(), "carnotzet"))
 				.topLevelModuleResourcesPath(project.getBasedir().toPath().resolve("src/main/resources"))
+				.attachToCarnotzetNetwork(attachToCarnotzetNetwork)
 				.extensions(runtimeExtensions)
 				.build();
 		carnotzet = new Carnotzet(config);

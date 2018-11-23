@@ -55,6 +55,8 @@ public class Carnotzet {
 
 	private final List<String> propFileNames;
 
+	private final Boolean attachToCarnotzetNetwork;
+
 	public Carnotzet(CarnotzetConfig config) {
 		log.debug("Creating new carnotzet with config [{}]", config);
 		this.config = config;
@@ -86,6 +88,12 @@ public class Carnotzet {
 			this.propFileNames = config.getPropFileNames();
 		} else {
 			this.propFileNames = Arrays.asList("carnotzet.properties");
+		}
+
+		if (config.getAttachToCarnotzetNetwork() != null) {
+			this.attachToCarnotzetNetwork = config.getAttachToCarnotzetNetwork();
+		} else {
+			this.attachToCarnotzetNetwork = true;
 		}
 
 		resolver = new MavenDependencyResolver(this::getModuleName, resourcesPath.resolve("maven"));
